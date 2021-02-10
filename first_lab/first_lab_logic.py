@@ -6,7 +6,8 @@ def closest_neighbor_upsampling(image, to_width, to_height):
     is_image = isinstance(image, Image.Image)
 
     if not is_image:
-        raise TypeError(f"Object passed to function has type {image.__class__}. Expected that it will be subclass of Image")
+        raise TypeError(f"Object passed to function has type {image.__class__}."
+                        "Expected that it will be subclass of Image")
 
     if image.width > to_width:
         raise ValueError(f"Passed image width {image.width} > to_width {to_width}, but <= expected")
@@ -32,7 +33,8 @@ def decimation_downsampling(image, to_width, to_height):
     is_image = isinstance(image, Image.Image)
 
     if not is_image:
-        raise TypeError(f"Object passed to function has type {image.__class__}. Expected that it will be subclass of Image")
+        raise TypeError(f"Object passed to function has type {image.__class__}."
+                        "Expected that it will be subclass of Image")
 
     if image.width < to_width:
         raise ValueError(f"Passed image width {image.width} < to_width {to_width}, but >= expected")
