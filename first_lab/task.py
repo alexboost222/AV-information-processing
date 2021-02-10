@@ -1,4 +1,4 @@
-import first_lab_logic
+import logic
 from PIL import Image
 
 image_path = 'images/eye.png'
@@ -11,7 +11,7 @@ m = 3
 n = 2
 
 im = Image.open(image_path)
-first_lab_logic.upsample_integer_number_of_times(im, m).save(upsampled_integer_number_of_times_image_path)
-first_lab_logic.downsample_integer_number_of_times(im, n).save(downsampled_integer_number_of_times_image_path)
-first_lab_logic.downsample_integer_number_of_times(
-    first_lab_logic.upsample_integer_number_of_times(im, m), n).save(oversampled_two_pass_image_path)
+logic.upsample_integer_number_of_times(im, m).save(upsampled_integer_number_of_times_image_path)
+logic.downsample_integer_number_of_times(im, n).save(downsampled_integer_number_of_times_image_path)
+logic.downsample_integer_number_of_times(
+    logic.upsample_integer_number_of_times(im, m), n).save(oversampled_two_pass_image_path)
