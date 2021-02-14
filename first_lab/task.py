@@ -1,17 +1,16 @@
-import logic
+from core.sampling import sampling
 from PIL import Image
 
-image_path = 'images/eye.png'
-upsampled_integer_number_of_times_image_path = 'images/eye_upsampled_m.png'
-downsampled_integer_number_of_times_image_path = 'images/eye_downsampled_n.png'
-oversampled_two_pass_image_path = 'images/eye_oversampled_two_pass.png'
-oversampled_one_pass_image_path = 'images/eye_oversampled_one_pass.png'
+image_path = 'images/cool.jpg'
+upsampled_integer_number_of_times_image_path = 'images/cool_upsampled_m.jpg'
+downsampled_integer_number_of_times_image_path = 'images/cool_downsampled_n.jpg'
+oversampled_two_pass_image_path = 'images/cool_oversampled_two_pass.jpg'
+oversampled_one_pass_image_path = 'images/cool_oversampled_one_pass.jpg'
 
 m = 3
 n = 2
 
 im = Image.open(image_path)
-logic.upsample_integer_number_of_times(im, m).save(upsampled_integer_number_of_times_image_path)
-logic.downsample_integer_number_of_times(im, n).save(downsampled_integer_number_of_times_image_path)
-logic.downsample_integer_number_of_times(
-    logic.upsample_integer_number_of_times(im, m), n).save(oversampled_two_pass_image_path)
+sampling.bilinear_interpolation_upsampling(im, m).save(upsampled_integer_number_of_times_image_path)
+sampling.decimation_downsampling(im, n).save(downsampled_integer_number_of_times_image_path)
+sampling.decimation_downsampling(sampling.bilinear_interpolation_upsampling(im, m), n).save(oversampled_two_pass_image_path)
