@@ -1,22 +1,18 @@
 from PIL import Image
-from random import sample as random_sample
 from core.math import math
+from core.verification import verification
+
+# TODO change order of for cycles from height; width to width; height
 
 
+# TODO extract different scripts for different modes like RGB etc
 def closest_neighbor_upsampling(image, factor):
-    is_image = isinstance(image, Image.Image)
-
-    if not is_image:
-        raise TypeError(f"Object passed to function has type {image.__class__}."
-                        "Expected that it will be subclass of Image.")
+    verification.verify_is_image_or_exception(image)
 
     if factor == 1:
         return image.copy()
 
-    is_natural = isinstance(factor, int) and factor > 0
-
-    if not is_natural:
-        raise ValueError(f"Passed upsampling factor {factor} is not natural but natural expected.")
+    verification.verify_is_natural_or_exception(factor)
 
     result_width = image.width * factor
     result_height = image.height * factor
@@ -31,20 +27,14 @@ def closest_neighbor_upsampling(image, factor):
     return result
 
 
+# TODO solve problem with black left and lower borders
 def bilinear_interpolation_upsampling(image, factor):
-    is_image = isinstance(image, Image.Image)
-
-    if not is_image:
-        raise TypeError(f"Object passed to function has type {image.__class__}."
-                        "Expected that it will be subclass of Image.")
+    verification.verify_is_image_or_exception(image)
 
     if factor == 1:
         return image.copy()
 
-    is_natural = isinstance(factor, int) and factor > 0
-
-    if not is_natural:
-        raise ValueError(f"Passed upsampling factor {factor} is not natural but natural expected.")
+    verification.verify_is_natural_or_exception(factor)
 
     result_width = image.width * factor
     result_height = image.height * factor
@@ -78,20 +68,14 @@ def bilinear_interpolation_upsampling(image, factor):
     return result
 
 
+# TODO solve problem with dropping factor - 1 pixels from right and lower borders
 def decimation_downsampling(image, factor):
-    is_image = isinstance(image, Image.Image)
-
-    if not is_image:
-        raise TypeError(f"Object passed to function has type {image.__class__}."
-                        "Expected that it will be subclass of Image.")
+    verification.verify_is_image_or_exception(image)
 
     if factor == 1:
         return image.copy()
 
-    is_natural = isinstance(factor, int) and factor > 0
-
-    if not is_natural:
-        raise ValueError(f"Passed upsampling factor {factor} is not natural but natural expected.")
+    verification.verify_is_natural_or_exception(factor)
 
     result_width = image.width // factor
     result_height = image.height // factor
@@ -110,5 +94,25 @@ def decimation_downsampling(image, factor):
             row = iterator // result_width
             result.putpixel((col, row), image.getpixel((j, i)))
             iterator += 1
+
+    return result
+
+
+def one_pass_resampling(image, upsample_factor, downsample_factor):
+    verification.verify_is_image_or_exception(image)
+
+    verification.verify_is_natural_or_exception(upsample_factor)
+    verification.verify_is_natural_or_exception(downsample_factor)
+
+    if upsample_factor == downsample_factor:
+        return image.copy()
+
+    result_width = image.width * upsample_factor // downsample_factor
+    result_height = image.height * upsample_factor // downsample_factor
+    result = Image.new(image.mode, (result_width, result_height))
+
+    for i in range(result_width):
+        for j in range(result_height):
+            result.putpixel((i, j), image.getpixel((i * downsample_factor // upsample_factor, j * downsample_factor / upsample_factor)))
 
     return result
