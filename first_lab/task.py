@@ -1,5 +1,6 @@
 from core.sampling import sampling
 from core.grayscale import grayscale
+from core.thresholding import thresholding
 from PIL import Image
 
 IMAGE_NAME = 'cool'
@@ -36,6 +37,15 @@ def second_part_grayscale(image):
     grayscale.photoshop_grayscale(image).save(photoshop_grayscaled_image_path)
 
 
+def third_part_threshold(image):
+    image_threshold_folder_path = f'images/{IMAGE_NAME}_processed/threshold'
+
+    balansed_hist_thresholded_image_path = f'{image_threshold_folder_path}/{IMAGE_NAME}_balansed_hist_thresholded.{IMAGE_FORMAT}'
+
+    thresholding.balansed_histogram_method(grayscale.mean_grayscale(image)).save(balansed_hist_thresholded_image_path)
+
+
 im = Image.open(IMAGE_PATH).convert(IMAGE_MODE)
 first_part_sampling(im)
 second_part_grayscale(im)
+third_part_threshold(im)
