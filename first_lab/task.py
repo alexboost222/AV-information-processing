@@ -1,21 +1,41 @@
 from core.sampling import sampling
+from core.grayscale import grayscale
 from PIL import Image
 
-image_name = 'picture3'
-image_format = 'png'
-image_mode = 'RGB'
+IMAGE_NAME = 'cool'
+IMAGE_FORMAT = 'jpg'
+IMAGE_MODE = 'RGB'
+IMAGE_PATH = f'images/{IMAGE_NAME}.{IMAGE_FORMAT}'
 
-image_path = f'images/{image_name}.{image_format}'
-upsampled_integer_number_of_times_image_path = f'images/{image_name}_upsampled_m.{image_format}'
-downsampled_integer_number_of_times_image_path = f'images/{image_name}_downsampled_n.{image_format}'
-oversampled_two_pass_image_path = f'images/{image_name}_oversampled_two_pass.{image_format}'
-oversampled_one_pass_image_path = f'images/{image_name}_oversampled_one_pass.{image_format}'
 
-upsample_factor = 3
-downsample_factor = 4
+def first_part_sampling(image):
+    image_sampling_folder_path = f'images/{IMAGE_NAME}_processed/sampling'
+    upsampled_integer_number_of_times_image_path = f'{image_sampling_folder_path}/{IMAGE_NAME}_upsampled_m.{IMAGE_FORMAT}'
+    downsampled_integer_number_of_times_image_path = f'{image_sampling_folder_path}/{IMAGE_NAME}_downsampled_n.{IMAGE_FORMAT}'
+    oversampled_two_pass_image_path = f'{image_sampling_folder_path}/{IMAGE_NAME}_oversampled_two_pass.{IMAGE_FORMAT}'
+    oversampled_one_pass_image_path = f'{image_sampling_folder_path}/{IMAGE_NAME}_oversampled_one_pass.{IMAGE_FORMAT}'
 
-image = Image.open(image_path).convert(image_mode)
-sampling.bilinear_interpolation_upsampling(image, upsample_factor).save(upsampled_integer_number_of_times_image_path)
-sampling.decimation_downsampling(image, downsample_factor).save(downsampled_integer_number_of_times_image_path)
-sampling.decimation_downsampling(sampling.bilinear_interpolation_upsampling(image, upsample_factor), downsample_factor).save(oversampled_two_pass_image_path)
-sampling.one_pass_resampling(image, upsample_factor, downsample_factor).save(oversampled_one_pass_image_path)
+    upsample_factor = 3
+    downsample_factor = 4
+
+    sampling.bilinear_interpolation_upsampling(image, upsample_factor).save(
+        upsampled_integer_number_of_times_image_path)
+    sampling.decimation_downsampling(image, downsample_factor).save(downsampled_integer_number_of_times_image_path)
+    sampling.decimation_downsampling(sampling.bilinear_interpolation_upsampling(image, upsample_factor),
+                                     downsample_factor).save(oversampled_two_pass_image_path)
+    sampling.one_pass_resampling(image, upsample_factor, downsample_factor).save(oversampled_one_pass_image_path)
+
+
+def second_part_grayscale(image):
+    image_grayscale_folder_path = f'images/{IMAGE_NAME}_processed/grayscale'
+
+    mean_grayscaled_image_path = f'{image_grayscale_folder_path}/{IMAGE_NAME}_mean_grayscaled.{IMAGE_FORMAT}'
+    photoshop_grayscaled_image_path = f'{image_grayscale_folder_path}/{IMAGE_NAME}_photoshop_grayscaled.{IMAGE_FORMAT}'
+
+    grayscale.mean_grayscale(image).save(mean_grayscaled_image_path)
+    grayscale.photoshop_grayscale(image).save(photoshop_grayscaled_image_path)
+
+
+im = Image.open(IMAGE_PATH).convert(IMAGE_MODE)
+first_part_sampling(im)
+second_part_grayscale(im)
