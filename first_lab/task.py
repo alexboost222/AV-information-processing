@@ -3,8 +3,8 @@ from core.grayscale import grayscale
 from core.thresholding import thresholding
 from PIL import Image
 
-IMAGE_NAME = 'cool'
-IMAGE_FORMAT = 'jpg'
+IMAGE_NAME = 'spyder'
+IMAGE_FORMAT = 'jpeg'
 IMAGE_MODE = 'RGB'
 IMAGE_PATH = f'images/{IMAGE_NAME}.{IMAGE_FORMAT}'
 

@@ -13,29 +13,18 @@ def balansed_histogram_method(image):
 
     extreme_left = 0
     extreme_right = len(histogram) - 1
-    histogram_center = int(round((extreme_right + extreme_left) / 2))
-
-    left_part_weight = sum(histogram[extreme_left:histogram_center])
-    right_part_weight = sum(histogram[histogram_center:extreme_right])
+    histogram_center = histogram_weight_center(histogram, extreme_left, extreme_right)
 
     while extreme_left < extreme_right:
+        left_part_weight = sum(histogram[extreme_left:histogram_center])
+        right_part_weight = sum(histogram[histogram_center:extreme_right])
+
         if left_part_weight > right_part_weight:
-            left_part_weight -= histogram[extreme_left]
             extreme_left += 1
         else:
-            right_part_weight -= histogram[extreme_right]
             extreme_right -= 1
 
-        new_histogram_center = int(round((extreme_left + extreme_right) / 2))
-
-        if new_histogram_center < histogram_center:
-            left_part_weight -= histogram[histogram_center]
-            right_part_weight += histogram[histogram_center]
-        elif new_histogram_center > histogram_center:
-            left_part_weight += histogram[histogram_center]
-            right_part_weight -= histogram[histogram_center]
-
-        histogram_center = new_histogram_center
+        histogram_center = histogram_weight_center(histogram, extreme_left, extreme_right)
 
     threshold_color = histogram_center
 
@@ -44,3 +33,20 @@ def balansed_histogram_method(image):
             result.putpixel((x, y), image.getpixel((x, y)) >= threshold_color)
 
     return result
+
+
+def histogram_weight_center(histogram, start, stop):
+    weight_delta_absolute = sum(histogram[start:stop])
+    center = start
+
+    for i in range(start, stop):
+        left_part_weight = sum(histogram[start:i])
+        right_part_weight = sum(histogram[i:stop])
+
+        new_weight_delta_absolute = abs(right_part_weight - left_part_weight)
+
+        if new_weight_delta_absolute < weight_delta_absolute:
+            center = i
+            weight_delta_absolute = new_weight_delta_absolute
+
+    return center
