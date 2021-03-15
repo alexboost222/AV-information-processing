@@ -33,3 +33,33 @@ def spatial_smoothing_difference(image):
             result.putpixel((x, y), abs(image.getpixel((x, y)) - spatial_smoothed.getpixel((x, y))))
 
     return result
+
+
+# Assumes that image has 'L' mode (grayscale)
+def roberts_cross(image):
+    verify_is_image_or_exception(image)
+
+    result = Image.new(image.mode, (image.width, image.height))
+
+    for x in range(result.width - 1):
+        for y in range(result.height - 1):
+            gradient_x = abs(image.getpixel((x, y)) - image.getpixel((x + 1, y + 1)))
+            gradient_y = abs(image.getpixel((x + 1, y)) - image.getpixel((x, y + 1)))
+            gradient = int(round((gradient_x ** 2 + gradient_y ** 2) ** 0.5))
+            result.putpixel((x, y), gradient)
+
+    return result
+
+
+# Assumes that image has 'L' mode (grayscale)
+def roberts_cross_difference(image):
+    verify_is_image_or_exception(image)
+
+    roberts_crossed = roberts_cross(image)
+    result = Image.new(image.mode, (image.width, image.height))
+
+    for x in range(result.width - 1):
+        for y in range(result.height - 1):
+            result.putpixel((x, y), abs(image.getpixel((x, y)) - roberts_crossed.getpixel((x, y))))
+
+    return result
