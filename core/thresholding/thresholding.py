@@ -26,11 +26,11 @@ def balansed_histogram_method(image):
 
         histogram_center = histogram_weight_center(histogram, extreme_left, extreme_right)
 
-    threshold_color = histogram_center
+    threshold = histogram_center
 
     for x in range(result.width):
         for y in range(result.height):
-            result.putpixel((x, y), image.getpixel((x, y)) >= threshold_color)
+            result.putpixel((x, y), image.getpixel((x, y)) >= threshold)
 
     return result
 
