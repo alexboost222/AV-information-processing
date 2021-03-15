@@ -4,7 +4,7 @@ from core.grayscale import grayscale
 from core.filtration import filtration
 from PIL import Image
 
-IMAGE_NAME = 'text'
+IMAGE_NAME = 'old_text_2'
 IMAGE_FORMAT = 'jpg'
 IMAGE_MODE = 'RGB'
 IMAGES_FOLDER_NAME = 'images'
