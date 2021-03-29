@@ -1,7 +1,24 @@
 from PIL import Image
-from core.verification.verification import verify_is_image_or_exception
+from core.verification.verification import verify_is_image_or_exception, verify_is_natural_or_exception
 
 THRESHOLDING_MODE = '1'
+
+
+# Assumes that image has 'L' mode (grayscale)
+def simple_threshold(image, threshold):
+    verify_is_image_or_exception(image)
+    verify_is_natural_or_exception(threshold)
+
+    if threshold > 255:
+        raise ValueError(f'Parameter threshold {threshold} > 255')
+
+    result = Image.new(THRESHOLDING_MODE, image.size)
+
+    for x in range(image.width):
+        for y in range(image.height):
+            result.putpixel((x, y), image.getpixel((x, y)) > threshold)
+
+    return result
 
 
 # Assumes that image has 'L' mode (grayscale)
