@@ -29,7 +29,7 @@ def first_part_roberts_cross(image, image_name, image_format):
     filtration.roberts_cross_y(smoothed).save(roberts_cross_y_image_path)
     filtration.roberts_cross(smoothed).save(roberts_cross_image_path)
 
-    for i in range(10, 255, 10):
+    for i in range(10, 31):
         filtration.roberts_cross_threshold(smoothed, i).save(roberts_cross_normalized_image_path.replace('#', f'{i}'))
 
 
