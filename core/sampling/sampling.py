@@ -110,3 +110,49 @@ def one_pass_resampling(image, upsample_factor, downsample_factor):
             result.putpixel((x, y), image.getpixel((x * downsample_factor // upsample_factor, y * downsample_factor / upsample_factor)))
 
     return result
+
+
+# Assumes that image has 'L' mode (grayscale)
+def cut_empty_rows_and_cols(image, min_threshold, max_threshold):
+    verification.verify_is_image_or_exception(image)
+
+    empty_row_numbers = []
+    empty_column_numbers = []
+
+    for x in range(image.width):
+        row_is_empty = True
+        for y in range(image.height):
+            if min_threshold <= image.getpixel((x, y)) <= max_threshold:
+                row_is_empty = False
+                break
+
+        if row_is_empty:
+            empty_column_numbers.append(x)
+
+    for y in range(image.height):
+        row_is_empty = True
+        for x in range(image.width):
+            if min_threshold <= image.getpixel((x, y)) <= max_threshold:
+                row_is_empty = False
+                break
+
+        if row_is_empty:
+            empty_row_numbers.append(y)
+
+    result = Image.new(image.mode, (image.width - len(empty_column_numbers), image.height - len(empty_row_numbers)))
+
+    t = 0
+    for x in range(image.width):
+        if x in empty_column_numbers:
+            continue
+        for y in range(image.height):
+            if y in empty_row_numbers:
+                continue
+
+            result_col_number = t // result.height
+            result_row_number = t % result.height
+
+            result.putpixel((result_col_number, result_row_number), image.getpixel((x, y)))
+            t += 1
+
+    return result
