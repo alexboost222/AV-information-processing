@@ -4,13 +4,7 @@ import sys
 from core.grayscale import grayscale
 from core.filtration import filtration
 from PIL import Image
-
-
-IMAGES_FOLDER_NAME = 'images'
-
-
-def image_path(image_name, image_format):
-    return f'../{IMAGES_FOLDER_NAME}/{image_name}.{image_format}'
+from folder_helper import IMAGES_FOLDER_NAME, image_path
 
 
 def first_part_spatial_smooth(image, image_name, image_format):

@@ -5,13 +5,7 @@ from core.sampling import sampling
 from core.grayscale import grayscale
 from core.thresholding import thresholding
 from PIL import Image
-
-
-IMAGES_FOLDER_NAME = 'images'
-
-
-def image_path(image_name, image_format):
-    return f'../{IMAGES_FOLDER_NAME}/{image_name}.{image_format}'
+from folder_helper import IMAGES_FOLDER_NAME, image_path
 
 
 def first_part_sampling(image, image_name, image_format):

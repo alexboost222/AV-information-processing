@@ -5,12 +5,7 @@ from PIL import Image
 
 from core.filtration import filtration
 from core.grayscale import grayscale
-
-IMAGES_FOLDER_NAME = 'images'
-
-
-def image_path(image_name, image_format):
-    return f'../{IMAGES_FOLDER_NAME}/{image_name}.{image_format}'
+from folder_helper import IMAGES_FOLDER_NAME, image_path
 
 
 def first_part_roberts_cross(image, image_name, image_format):
