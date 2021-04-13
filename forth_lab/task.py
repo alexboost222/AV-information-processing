@@ -26,6 +26,8 @@ PROJECTIONS_FOLDER_NAME = 'projections'
 def generate_report(alphabet_folder_name):
     report = MdUtils(file_name=f'../{REPORTS_FOLDER_NAME}/{REPORT_FILE_NAME}')
     report.new_header(level=1, title=REPORT_FILE_TITLE)
+    report.new_line(text='Выполнил Ахманов Алексей Б18-514')
+    report.new_line(text='Алфавит - греческие заглавные')
 
     for letter in ALPHABET:
         letter_image_path = f'../{IMAGES_FOLDER_NAME}/{alphabet_folder_name}/{letter}.png'
@@ -48,14 +50,20 @@ def generate_report(alphabet_folder_name):
         h_levels, h_projections = horizontal_projection(thresholded)
         pyplot.plot(h_levels, h_projections)
         pyplot.title(f'Horizontal projection {letter}')
-        pyplot.savefig(f'../{PROJECTIONS_FOLDER_NAME}/horizontal_projection_{letter}.png')
+        path = f'../{PROJECTIONS_FOLDER_NAME}/horizontal_projection_{letter}.png'
+        pyplot.savefig(path)
         pyplot.close()
 
-        v_levels, v_projections = horizontal_projection(thresholded)
+        report.new_line(report.new_inline_image(text=letter, path=path))
+
+        v_levels, v_projections = vertical_projection(thresholded)
         pyplot.plot(v_levels, v_projections)
         pyplot.title(f'Vertical projection {letter}')
-        pyplot.savefig(f'../{PROJECTIONS_FOLDER_NAME}/vertical_projection_{letter}.png')
+        path = f'../{PROJECTIONS_FOLDER_NAME}/vertical_projection_{letter}.png'
+        pyplot.savefig(path)
         pyplot.close()
+
+        report.new_line(report.new_inline_image(text=letter, path=path))
 
         report.new_line()
 
