@@ -26,7 +26,7 @@ def balansed_histogram_method(image):
     verify_is_image_or_exception(image)
 
     histogram = image.histogram()
-    result = Image.new(THRESHOLDING_MODE, (image.width, image.height))
+    result = Image.new(THRESHOLDING_MODE, image.size)
 
     extreme_left = 0
     extreme_right = len(histogram) - 1
