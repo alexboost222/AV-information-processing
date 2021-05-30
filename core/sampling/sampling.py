@@ -1,6 +1,8 @@
 from itertools import islice
 
-from PIL import Image
+from PIL import Image, ImageDraw
+
+from core.helpers.helpers import white_color_by_mode
 from core.math import math
 from core.verification import verification
 
@@ -158,3 +160,34 @@ def cut_empty_rows_and_cols(image):
     lower_whitespace_end = last_element_in_a_row(empty_row_numbers, image.height, -1)
 
     return image.crop(box=(left_whitespace_end, upper_whitespace_end, right_whitespace_end + 1, lower_whitespace_end + 1))
+
+
+def expand_with_white(image: Image, where, size: int) -> Image:
+    verification.verify_is_image_or_exception(image)
+
+    fill = white_color_by_mode(image.mode)
+
+    if where == 'to_left':
+        result = Image.new(image.mode, (image.width + size, image.height))
+        draw = ImageDraw.Draw(im=result, mode=result.mode)
+        draw.rectangle(xy=[(0, 0), (size + 1, result.height + 1)], fill=fill)
+        result.paste(im=image, box=(size + 1, 0))
+    elif where == 'to_right':
+        result = Image.new(image.mode, (image.width + size, image.height))
+        draw = ImageDraw.Draw(im=result, mode=result.mode)
+        draw.rectangle(xy=[(result.width - 1 - size, 0), (result.width + 1, result.height + 1)], fill=fill)
+        result.paste(im=image, box=(0, 0))
+    elif where == 'to_top':
+        result = Image.new(image.mode, (image.width, image.height + size))
+        draw = ImageDraw.Draw(im=result, mode=result.mode)
+        draw.rectangle(xy=[(0, 0), (result.width + 1, size + 1)], fill=fill)
+        result.paste(im=image, box=(0, size + 1))
+    elif where == 'to_bottom':
+        result = Image.new(image.mode, (image.width, image.height + size))
+        draw = ImageDraw.Draw(im=result, mode=result.mode)
+        draw.rectangle(xy=[(0, result.height - 1 - size), (result.width + 1, result.height + 1)], fill=fill)
+        result.paste(im=image, box=(0, 0))
+    else:
+        raise ValueError(f'Where argument {where} is unsupported')
+
+    return result

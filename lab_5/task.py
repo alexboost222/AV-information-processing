@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from mdutils import MdUtils
 
+from core.draw.draw import draw_profiles
 from core.sampling.sampling import cut_empty_rows_and_cols
 from folder_helper import REPORTS_FOLDER_NAME, PROJECTIONS_FOLDER_NAME, IMAGES_FOLDER_NAME
 
@@ -25,6 +26,7 @@ def generate_report():
     result = ImageDraw.Draw(im=phrase_image, mode=GRAYSCALE_MODE)
     result.text(xy=(0, 0), text=PHRASE, font=FONT, fill=0, anchor='lt')
     phrase_image = cut_empty_rows_and_cols(phrase_image)
+    phrase_image = draw_profiles(phrase_image)
     phrase_image.save(phrase_image_path)
 
 
