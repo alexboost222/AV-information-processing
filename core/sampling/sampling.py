@@ -1,3 +1,5 @@
+from itertools import islice
+
 from PIL import Image
 from core.math import math
 from core.verification import verification
@@ -113,46 +115,46 @@ def one_pass_resampling(image, upsample_factor, downsample_factor):
 
 
 # Assumes that image has 'L' mode (grayscale)
-def cut_empty_rows_and_cols(image, min_threshold, max_threshold):
+def cut_empty_rows_and_cols(image):
     verification.verify_is_image_or_exception(image)
 
     empty_row_numbers = []
     empty_column_numbers = []
 
     for x in range(image.width):
-        row_is_empty = True
+        is_col_empty = True
         for y in range(image.height):
-            if min_threshold <= image.getpixel((x, y)) <= max_threshold:
-                row_is_empty = False
+            if image.getpixel((x, y)) < 255:
+                is_col_empty = False
                 break
 
-        if row_is_empty:
+        if is_col_empty:
             empty_column_numbers.append(x)
 
     for y in range(image.height):
-        row_is_empty = True
+        is_row_empty = True
         for x in range(image.width):
-            if min_threshold <= image.getpixel((x, y)) <= max_threshold:
-                row_is_empty = False
+            if image.getpixel((x, y)) < 255:
+                is_row_empty = False
                 break
 
-        if row_is_empty:
+        if is_row_empty:
             empty_row_numbers.append(y)
 
-    result = Image.new(image.mode, (image.width - len(empty_column_numbers), image.height - len(empty_row_numbers)))
+    def last_element_in_a_row(elements, start_element, step):
+        prev_element = start_element
 
-    t = 0
-    for x in range(image.width):
-        if x in empty_column_numbers:
-            continue
-        for y in range(image.height):
-            if y in empty_row_numbers:
-                continue
+        for element in elements[::step]:
+            if abs(element - prev_element) > 1:
+                return prev_element + step
 
-            result_col_number = t // result.height
-            result_row_number = t % result.height
+            prev_element = element
 
-            result.putpixel((result_col_number, result_row_number), image.getpixel((x, y)))
-            t += 1
+        return prev_element + step
 
-    return result
+    left_whitespace_end = last_element_in_a_row(empty_column_numbers, -1, 1)
+    upper_whitespace_end = last_element_in_a_row(empty_row_numbers, -1, 1)
+    right_whitespace_end = last_element_in_a_row(empty_column_numbers, image.width, -1)
+    lower_whitespace_end = last_element_in_a_row(empty_row_numbers, image.height, -1)
+
+    return image.crop(box=(left_whitespace_end, upper_whitespace_end, right_whitespace_end + 1, lower_whitespace_end + 1))
