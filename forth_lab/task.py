@@ -4,7 +4,7 @@ import matplotlib.pyplot as pyplot
 from PIL import Image, ImageFont, ImageDraw
 
 from core.sampling.sampling import cut_empty_rows_and_cols
-from folder_helper import IMAGES_FOLDER_NAME, REPORTS_FOLDER_NAME
+from folder_helper import IMAGES_FOLDER_NAME, REPORTS_FOLDER_NAME, PROJECTIONS_FOLDER_NAME
 from mdutils.mdutils import MdUtils
 
 from core.thresholding.thresholding import simple_threshold
@@ -18,10 +18,10 @@ ALPHABET = 'AΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
 REPORT_FILE_NAME = 'forth_lab_report'
 REPORT_FILE_TITLE = 'Лабораторная работа 4. Выделение признаков символов'
 THRESHOLD = 100
-PROJECTIONS_FOLDER_NAME = 'projections'
 GRAYSCALE_MODE = 'L'
 WHITE = 255
 FONT_SIZE = 52
+FONT = ImageFont.truetype(font='../fonts/times.ttf', size=FONT_SIZE)
 
 
 def generate_report(alphabet_folder_name):
@@ -29,13 +29,12 @@ def generate_report(alphabet_folder_name):
     report.new_header(level=1, title=REPORT_FILE_TITLE)
     report.new_line(text='Выполнил Ахманов Алексей Б18-514')
     report.new_line(text='Алфавит - греческие заглавные')
-    font = ImageFont.truetype(font='../fonts/times.ttf', size=FONT_SIZE)
 
     for letter in ALPHABET:
         letter_image_path = f'../{IMAGES_FOLDER_NAME}/{alphabet_folder_name}/{letter}.png'
         letter_image = Image.new(mode=GRAYSCALE_MODE, size=(FONT_SIZE, FONT_SIZE), color=WHITE)
         result = ImageDraw.Draw(im=letter_image, mode=GRAYSCALE_MODE)
-        result.text(xy=(0, 0), text=letter, font=font, fill=0, anchor='lt')
+        result.text(xy=(0, 0), text=letter, font=FONT, fill=0, anchor='lt')
         letter_image = cut_empty_rows_and_cols(letter_image)
         letter_image.save(letter_image_path)
         report.new_header(level=2, title=f'Буква {letter}')
