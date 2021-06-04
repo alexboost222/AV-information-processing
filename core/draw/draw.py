@@ -37,18 +37,18 @@ def draw_projections(image: Image) -> Image:
 
 
 # Assumes that image is symbolic string and has 'L' mode
-def draw_symbol_segments(image: Image) -> Image:
+def draw_symbol_segments(image: Image, diff_threshold: float) -> Image:
     verification.verify_is_image_or_exception(image)
 
     start_color = (66, 218, 245)
     stop_color = (204, 87, 247)
 
-    segments = symbol_segments(image, 0.5)
+    segments = symbol_segments(image, diff_threshold)
     result = image.copy().convert('RGB')
     result_draw = ImageDraw.Draw(im=result)
 
     for segment in segments:
-        result_draw.rectangle(xy=[(segment[0], 0), (segment[0] + 1, result.height + 1)], fill=start_color)
-        result_draw.rectangle(xy=[(segment[1], 0), (segment[1] + 1, result.height + 1)], fill=stop_color)
+        result_draw.rectangle(xy=[(segment[0], 0), (segment[0], result.height)], fill=start_color)
+        result_draw.rectangle(xy=[(segment[1], 0), (segment[1], result.height)], fill=stop_color)
 
     return result

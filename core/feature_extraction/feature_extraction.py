@@ -146,29 +146,32 @@ def inverted_vertical_projection(image):
     return levels, projections
 
 
-# Assumes that image is symbolic string and has '1' mode
+# Assumes that image is symbolic string and has 'L' mode
 def symbol_segments(image: Image, diff_threshold: float):
     verify_is_image_or_exception(image)
 
     v_levels, v_projections = inverted_vertical_projection(image)
     max_v_projection = max(v_projections)
+    min_v_projection = min(v_projections)
 
-    diff = max_v_projection * diff_threshold
+    diff = (max_v_projection - min_v_projection) * diff_threshold
 
     start = 0
 
     prev_v_projection = 0
     result = []
 
-    for i in range(len(v_projections)):
-        current_diff = prev_v_projection - v_projections[i]
-
-        if current_diff < -diff:
+    for i in range(len(v_projections) - 1):
+        if prev_v_projection - diff <= 0 < v_projections[i] - diff:
             start = i
-        elif current_diff > diff:
+        elif prev_v_projection - diff > 0 >= v_projections[i] - diff:
             result.append((start, i))
+            start = -1
 
         prev_v_projection = v_projections[i]
+
+    if start != -1:
+        result.append((start, len(v_projections) - 1))
 
     return result
 
