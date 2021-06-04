@@ -1,6 +1,7 @@
 from PIL import Image
 
 from core.helpers.helpers import white_color_by_mode
+from core.math.math import euclidean_metric
 from core.verification.verification import verify_is_image_or_exception
 
 
@@ -18,7 +19,7 @@ def black_weight(image):
 
 
 # Assumes that image in '1' mode
-def specific_black_weight(image):
+def normalized_black_weight(image):
     verify_is_image_or_exception(image)
 
     return black_weight(image) / (image.width * image.height)
@@ -176,4 +177,48 @@ def symbol_segments(image: Image, diff_threshold: float):
     return result
 
 
+# Assumes that image_a and image_b has '1' mode:
+def proximity_measure(image_a: Image, image_b: Image) -> float:
+    verify_is_image_or_exception(image_a)
+    verify_is_image_or_exception(image_b)
 
+    signs = [(normalized_black_weight(image_a), normalized_black_weight(image_b))]
+
+    normalized_center_a = normalized_gravity_center(image_a)
+    normalized_center_b = normalized_gravity_center(image_b)
+
+    signs.append((normalized_center_a[0], normalized_center_b[0]))
+    signs.append((normalized_center_a[1], normalized_center_b[1]))
+
+    signs.append((normalized_central_horizontal_axial_moment(image_a), normalized_central_horizontal_axial_moment(image_b)))
+
+    signs.append((normalized_central_vertical_axial_moment(image_a), normalized_central_vertical_axial_moment(image_b)))
+
+    return euclidean_metric(signs)
+
+
+# Assumes that image has 'L' mode
+def proximity_assessment(image: Image, diff_threshold: float, phrase: str):
+    segments = symbol_segments(image, diff_threshold)
+
+    result = []
+
+    for segment in segments:
+        test_start = segment[0]
+        test_stop = segment[1]
+        test_segment_image = image.crop(box=(test_start, 0, test_stop, image.height))
+
+        tmp = []
+        result.append(tmp)
+
+        for j in range(len(segments)):
+            start = segments[j][0]
+            stop = segments[j][1]
+            segment_image = image.crop(box=(start, 0, stop, image.height))
+
+            measure = proximity_measure(test_segment_image, segment_image)
+            tmp.append((phrase[j], measure))
+
+        tmp.sort(key=lambda m: m[1])
+
+    return result

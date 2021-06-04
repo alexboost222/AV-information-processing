@@ -8,7 +8,7 @@ from folder_helper import IMAGES_FOLDER_NAME, REPORTS_FOLDER_NAME, PROJECTIONS_F
 from mdutils.mdutils import MdUtils
 
 from core.thresholding.thresholding import simple_threshold
-from core.feature_extraction.feature_extraction import black_weight, specific_black_weight, gravity_center,\
+from core.feature_extraction.feature_extraction import black_weight, normalized_black_weight, gravity_center,\
     normalized_gravity_center, central_horizontal_axial_moment, central_vertical_axial_moment,\
     normalized_central_horizontal_axial_moment, normalized_central_vertical_axial_moment, vertical_projection,\
     horizontal_projection
@@ -41,7 +41,7 @@ def generate_report(alphabet_folder_name):
         report.new_line(report.new_inline_image(text=letter, path=letter_image_path))
         thresholded = simple_threshold(letter_image, THRESHOLD)
         report.new_line(text=f'Вес черного - {black_weight(thresholded)}')
-        report.new_line(text=f'Удельный вес черного - {specific_black_weight(thresholded)}')
+        report.new_line(text=f'Удельный вес черного - {normalized_black_weight(thresholded)}')
         center = gravity_center(thresholded)
         report.new_line(text=f'Координаты центра масс - ({center[0]}, {center[1]})')
         normalized_center = normalized_gravity_center(thresholded)
