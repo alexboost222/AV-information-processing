@@ -20,15 +20,15 @@ DOWNSAMPLE_FACTOR = 4
 
 
 def generate_report():
-    report = MdUtils(file_name=f'./report.md')
+    report = MdUtils(file_name='./report.md')
     report.new_header(level=1, title='Бинаризация')
     report.new_line(text='Выполнил Ахманов Алексей Б18-514')
 
     for im in IMAGES:
-        processed_image_folder_path = f'{folder_helper.IMAGES_FOLDER_PATH}/{im}_processed'
-        os.makedirs(processed_image_folder_path, exist_ok=True)
-
         image_path = f'{folder_helper.IMAGES_FOLDER_PATH}/{im}'
+
+        processed_image_folder_path = f'{image_path}_processed'
+        os.makedirs(processed_image_folder_path, exist_ok=True)
 
         image = Image.open(image_path).convert(constants.RGB_MODE)
 
