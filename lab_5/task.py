@@ -1,15 +1,13 @@
 from PIL import Image, ImageDraw, ImageFont
 from mdutils import MdUtils
 
+import folder_helper
 from core.draw import draw
 from core.sampling.sampling import cut_empty_rows_and_cols
 from folder_helper import REPORTS_FOLDER_NAME, IMAGES_FOLDER_NAME
 
 ALPHABET = 'AΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
 PHRASE = 'ΨΟΜΓΤΗ ΛΙΟΣΡΦΔΔΦΗ ΦΓΤΩΖΦΥ ΚΜΙΞ ΒΞ'
-REPORT_FILE_NAME = 'lab_5_report'
-REPORT_FILE_TITLE = 'Лабораторная работа 5. Сегментация текста'
-PHRASE_FOLDER_NAME = 'greek_phrase_uppercase'
 GRAYSCALE_MODE = 'L'
 WHITE = 255
 FONT_SIZE = 52
@@ -18,16 +16,18 @@ SYMBOLS_DIFF_THRESHOLD = 0.03
 
 
 def generate_report():
-    report = MdUtils(file_name=f'../{REPORTS_FOLDER_NAME}/{REPORT_FILE_NAME}')
-    report.new_header(level=1, title=REPORT_FILE_TITLE)
+    report = MdUtils(file_name=f'./report.md')
+    report.new_header(level=1, title='Сегментация текста')
     report.new_line(text='Выполнил Ахманов Алексей Б18-514')
     report.new_line(text=f'Алфавит - {ALPHABET}')
     report.new_line(text=f'Исходная фраза - {PHRASE}')
 
-    phrase_image_path = f'../{IMAGES_FOLDER_NAME}/{PHRASE_FOLDER_NAME}/phrase.png'
-    phrase_projections_image_path = f'../{IMAGES_FOLDER_NAME}/{PHRASE_FOLDER_NAME}/phrase_projections.png'
-    phrase_segments_image_path = f'../{IMAGES_FOLDER_NAME}/{PHRASE_FOLDER_NAME}/phrase_segments.png'
-    phrase_result_image_path = f'../{IMAGES_FOLDER_NAME}/{PHRASE_FOLDER_NAME}/phrase_result.png'
+    # Phrase
+    phrase_image_path = f'{folder_helper.IMAGES_FOLDER_PATH}/phrase.png'
+    phrase_projections_image_path = f'{folder_helper.IMAGES_FOLDER_PATH}/phrase_projections.png'
+    phrase_segments_image_path = f'{folder_helper.IMAGES_FOLDER_PATH}/phrase_segments.png'
+    phrase_result_image_path = f'{folder_helper.IMAGES_FOLDER_PATH}/phrase_result.png'
+
     phrase_image = Image.new(mode=GRAYSCALE_MODE, size=(1200, FONT_SIZE), color=WHITE)
     result = ImageDraw.Draw(im=phrase_image, mode=GRAYSCALE_MODE)
     result.text(xy=(0, 0), text=PHRASE, font=FONT, fill=0, anchor='lt')
@@ -44,8 +44,7 @@ def generate_report():
     phrase_result_image.paste(im=phrase_segments_image, box=(30, 0))
     phrase_result_image.save(phrase_result_image_path)
 
-    report.new_line()
-
+    # Report
     report.new_header(level=2, title='Картинка с фразой')
     report.new_line(report.new_inline_image(text='Картинка с фразой', path=phrase_image_path))
 
