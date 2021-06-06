@@ -2,6 +2,7 @@ import csv
 from pprint import pprint
 
 from PIL import Image, ImageFont, ImageDraw
+from mdutils import MdUtils
 
 from core.feature_extraction.feature_extraction import proximity_measure, symbol_segments, proximity_assessment
 from core.sampling.sampling import cut_empty_rows_and_cols
@@ -12,22 +13,60 @@ SYMBOLS_DIFF_THRESHOLD = 0.03
 GRAYSCALE_MODE = 'L'
 WHITE = 255
 FONT_SIZE = 52
-FONT = ImageFont.truetype(font='../fonts/times.ttf', size=FONT_SIZE)
+SMALL_FONT_SIZE = 46
+FONT_PATH = '../fonts/times.ttf'
 
 
 def generate_report():
-    phrase_image = Image.new(mode=GRAYSCALE_MODE, size=(1200, FONT_SIZE), color=WHITE)
-    result = ImageDraw.Draw(im=phrase_image, mode=GRAYSCALE_MODE)
-    result.text(xy=(0, 0), text=PHRASE, font=FONT, fill=0, anchor='lt')
-    phrase_image = cut_empty_rows_and_cols(phrase_image)
+    def generate_phrase_image(width: int, font: ImageFont) -> Image:
+        result = Image.new(mode=GRAYSCALE_MODE, size=(width, font.size), color=WHITE)
+        result_draw = ImageDraw.Draw(im=result, mode=GRAYSCALE_MODE)
+        result_draw.text(xy=(0, 0), text=PHRASE, font=font, fill=0, anchor='lt')
+        return cut_empty_rows_and_cols(result)
 
-    p_assessment = proximity_assessment(phrase_image, SYMBOLS_DIFF_THRESHOLD, PHRASE)
+    def p_ass_for_table(p_ass):
+        result = []
+        for row in p_ass:
+            for element in row:
+                result.append(str(element))
 
-    with open('./proximity_assessment.csv', 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile, delimiter=' ', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        return result
 
-        for i in p_assessment:
-            writer.writerow(i)
+    report = MdUtils(file_name=f'./report.md')
+    report.new_header(level=1, title='Классификация')
+    report.new_line(text='Выполнил Ахманов Алексей Б18-514')
+    report.new_line(text=f'Алфавит - {ALPHABET}')
+    report.new_line(text=f'Исходная фраза - {PHRASE}')
+    report.new_line(text=f'Размер шрифта - {FONT_SIZE}')
+
+    # Phrase
+    phrase_image = generate_phrase_image(1200, ImageFont.truetype(font=FONT_PATH, size=FONT_SIZE))
+    phrase_image_small_font = generate_phrase_image(1200, ImageFont.truetype(font=FONT_PATH, size=SMALL_FONT_SIZE))
+
+    # Proximity assessment
+    p_assessment = proximity_assessment(image=phrase_image, diff_threshold=SYMBOLS_DIFF_THRESHOLD, phrase=PHRASE)
+    p_assessment_small_font = proximity_assessment(image=phrase_image_small_font, diff_threshold=SYMBOLS_DIFF_THRESHOLD,
+                                                   phrase=PHRASE)
+
+    p_assessment_for_table = p_ass_for_table(p_assessment)
+    p_assessment_small_font_for_table = p_ass_for_table(p_assessment_small_font)
+
+    # Report
+    report.new_header(level=2, title=f'Оценка близости для размера шрифта {FONT_SIZE}')
+
+    rows = len(p_assessment)
+    columns = len(p_assessment[0]) if len(p_assessment) > 0 else 0
+    report.new_table(columns=columns, rows=rows, text=p_assessment_for_table)
+
+    report.new_header(level=2, title=f'Оценка близости для размера шрифта {SMALL_FONT_SIZE}')
+
+    rows = len(p_assessment_small_font)
+    columns = len(p_assessment_small_font[0]) if len(p_assessment_small_font) > 0 else 0
+    report.new_table(columns=columns, rows=rows, text=p_assessment_small_font_for_table)
+
+    report.new_line(text='Так как были использованы нормализованные параметры для оценки близости символов, размер шрифта не влияет на результат')
+
+    report.create_md_file()
 
 
 def main():

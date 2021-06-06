@@ -199,6 +199,7 @@ def proximity_measure(image_a: Image, image_b: Image) -> float:
 
 # Assumes that image has 'L' mode
 def proximity_assessment(image: Image, diff_threshold: float, phrase: str):
+    phrase_symbols = phrase.replace(' ', '')
     segments = symbol_segments(image, diff_threshold)
 
     result = []
@@ -217,7 +218,7 @@ def proximity_assessment(image: Image, diff_threshold: float, phrase: str):
             segment_image = image.crop(box=(start, 0, stop, image.height))
 
             measure = proximity_measure(test_segment_image, segment_image)
-            tmp.append((phrase[j], measure))
+            tmp.append((phrase_symbols[j], measure))
 
         tmp.sort(key=lambda m: m[1])
 
