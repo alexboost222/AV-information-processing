@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw
 
-from core.feature_extraction.feature_extraction import horizontal_projection, vertical_projection, \
+from core import texturing, constants, math
+from core.feature_extraction.feature_extraction import horizontal_projection,\
     inverted_vertical_projection, symbol_segments
 from core.math.math import lerp
 from core.sampling.sampling import expand_with_white
@@ -50,5 +51,22 @@ def draw_symbol_segments(image: Image, diff_threshold: float) -> Image:
     for segment in segments:
         result_draw.rectangle(xy=[(segment[0], 0), (segment[0], result.height)], fill=start_color)
         result_draw.rectangle(xy=[(segment[1], 0), (segment[1], result.height)], fill=stop_color)
+
+    return result
+
+
+# Assumes that image has 'L' mode
+def draw_series_length_matrix(image: Image) -> Image:
+    verification.verify_is_image_or_exception(image)
+
+    series_length_matrix = texturing.texturing.series_length_matrix(image)
+
+    result = Image.new(mode=constants.constants.GRAYSCALE_MODE, size=(len(series_length_matrix[0]), len(series_length_matrix)))
+
+    max_series_length = max([max(row) for row in series_length_matrix])
+
+    for x in range(result.width):
+        for y in range(result.height):
+            result.putpixel((x, y), int(round(math.math.lerp(x1=0, f1=0, x2=max_series_length, f2=255, x=series_length_matrix[y][x]))))
 
     return result
