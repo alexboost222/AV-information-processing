@@ -3,7 +3,7 @@ import os
 from PIL import Image
 from mdutils import MdUtils
 
-import folder_helper
+from core.helpers import folder_helper
 from core.constants import constants
 from core.grayscale import grayscale
 from core.sampling import sampling

@@ -1,17 +1,16 @@
 from PIL import Image, ImageDraw, ImageFont
 from mdutils import MdUtils
 
-import folder_helper
+from core.helpers import folder_helper
 from core.draw import draw
 from core.sampling.sampling import cut_empty_rows_and_cols
-from folder_helper import REPORTS_FOLDER_NAME, IMAGES_FOLDER_NAME
 
 ALPHABET = 'AΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
 PHRASE = 'ΨΟΜΓΤΗ ΛΙΟΣΡΦΔΔΦΗ ΦΓΤΩΖΦΥ ΚΜΙΞ ΒΞ'
 GRAYSCALE_MODE = 'L'
 WHITE = 255
 FONT_SIZE = 52
-FONT = ImageFont.truetype(font='../fonts/times.ttf', size=FONT_SIZE)
+FONT = ImageFont.truetype(font=f'{folder_helper.FONTS_FOLDER_PATH}/times.ttf', size=FONT_SIZE)
 SYMBOLS_DIFF_THRESHOLD = 0.03
 
 

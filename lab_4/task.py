@@ -1,14 +1,11 @@
 import os
-import sys
 import matplotlib.pyplot as pyplot
 
 from PIL import Image, ImageFont, ImageDraw
 
-import folder_helper
 from core.constants import constants
-from core.helpers import helpers
+from core.helpers import folder_helper
 from core.sampling.sampling import cut_empty_rows_and_cols
-from folder_helper import IMAGES_FOLDER_NAME, REPORTS_FOLDER_NAME
 from mdutils.mdutils import MdUtils
 
 from core.thresholding.thresholding import simple_threshold
@@ -21,7 +18,7 @@ from core.feature_extraction.feature_extraction import black_weight, normalized_
 ALPHABET = 'AΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
 WHITE = 255
 FONT_SIZE = 52
-FONT = ImageFont.truetype(font='../fonts/times.ttf', size=FONT_SIZE)
+FONT = ImageFont.truetype(font=f'{folder_helper.FONTS_FOLDER_PATH}/times.ttf', size=FONT_SIZE)
 
 
 def generate_report():

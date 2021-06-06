@@ -1,10 +1,8 @@
-import csv
-from pprint import pprint
-
 from PIL import Image, ImageFont, ImageDraw
 from mdutils import MdUtils
 
-from core.feature_extraction.feature_extraction import proximity_measure, symbol_segments, proximity_assessment
+from core.helpers import folder_helper
+from core.feature_extraction.feature_extraction import proximity_assessment
 from core.sampling.sampling import cut_empty_rows_and_cols
 
 ALPHABET = 'AΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
@@ -14,7 +12,7 @@ GRAYSCALE_MODE = 'L'
 WHITE = 255
 FONT_SIZE = 52
 SMALL_FONT_SIZE = 46
-FONT_PATH = '../fonts/times.ttf'
+FONT_PATH = f'{folder_helper.FONTS_FOLDER_PATH}/times.ttf'
 
 
 def generate_report():
