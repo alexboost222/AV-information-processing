@@ -10,6 +10,9 @@
 ### Исходная картинка
   
 ![Исходная картинка](./resources/images/old_paris.jpg)
+### Оттенки серого
+  
+![Оттенки серого](./resources/images/old_paris.jpg_processed/old_paris.jpg_grayscaled.png)
 ### Линейное контрастирование
   
 ![Линейное контрастирование](./resources/images/old_paris.jpg_processed/old_paris.jpg_linear_contrasted.png)
@@ -44,6 +47,9 @@
 ### Исходная картинка
   
 ![Исходная картинка](./resources/images/old_saratov.jpg)
+### Оттенки серого
+  
+![Оттенки серого](./resources/images/old_saratov.jpg_processed/old_saratov.jpg_grayscaled.png)
 ### Линейное контрастирование
   
 ![Линейное контрастирование](./resources/images/old_saratov.jpg_processed/old_saratov.jpg_linear_contrasted.png)
@@ -78,6 +84,9 @@
 ### Исходная картинка
   
 ![Исходная картинка](./resources/images/old_serpukhov.jpg)
+### Оттенки серого
+  
+![Оттенки серого](./resources/images/old_serpukhov.jpg_processed/old_serpukhov.jpg_grayscaled.png)
 ### Линейное контрастирование
   
 ![Линейное контрастирование](./resources/images/old_serpukhov.jpg_processed/old_serpukhov.jpg_linear_contrasted.png)
