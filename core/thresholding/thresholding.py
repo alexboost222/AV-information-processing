@@ -1,7 +1,24 @@
 from PIL import Image
-from core.verification.verification import verify_is_image_or_exception
+from core.verification.verification import verify_is_image_or_exception, verify_is_natural_or_exception
 
 THRESHOLDING_MODE = '1'
+
+
+# Assumes that image has 'L' mode (grayscale)
+def simple_threshold(image, threshold):
+    verify_is_image_or_exception(image)
+    verify_is_natural_or_exception(threshold)
+
+    if threshold > 255:
+        raise ValueError(f'Parameter threshold {threshold} > 255')
+
+    result = Image.new(THRESHOLDING_MODE, image.size)
+
+    for x in range(image.width):
+        for y in range(image.height):
+            result.putpixel((x, y), image.getpixel((x, y)) > threshold)
+
+    return result
 
 
 # Assumes that image has 'L' mode (grayscale)
@@ -9,7 +26,7 @@ def balansed_histogram_method(image):
     verify_is_image_or_exception(image)
 
     histogram = image.histogram()
-    result = Image.new(THRESHOLDING_MODE, (image.width, image.height))
+    result = Image.new(THRESHOLDING_MODE, image.size)
 
     extreme_left = 0
     extreme_right = len(histogram) - 1
@@ -26,11 +43,11 @@ def balansed_histogram_method(image):
 
         histogram_center = histogram_weight_center(histogram, extreme_left, extreme_right)
 
-    threshold_color = histogram_center
+    threshold = histogram_center
 
     for x in range(result.width):
         for y in range(result.height):
-            result.putpixel((x, y), image.getpixel((x, y)) >= threshold_color)
+            result.putpixel((x, y), image.getpixel((x, y)) >= threshold)
 
     return result
 

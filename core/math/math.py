@@ -9,3 +9,13 @@ def rgb_color_lerp(x1, c1, x2, c2, x):
     b = int(lerp(x1, c1[2], x2, c2[2], x))
 
     return r, g, b
+
+
+def euclidean_metric(array_of_pairs) -> float:
+    result = 0
+
+    for pair in array_of_pairs:
+        result += pow(pair[0] - pair[1], 2)
+
+    return pow(result, 0.5)
+
